@@ -18,7 +18,7 @@ class CreateVehiclesTable extends Migration
             $table->string('license_plate_number')->unique();
             $table->string('vehicle_make');
             $table->string('vehicle_model');
-            $table->bigInteger('vehicle_year');
+            $table->bigInteger('model_year');
             $table->boolean('insured');
             $table->date('date_of_last_service')->nullable();
             $table->bigInteger('passenger_capacity');
