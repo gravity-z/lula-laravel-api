@@ -17,16 +17,16 @@ class DriverResource extends JsonResource
         return [
             'id' => $this->id,
             'id_number' => $this->id_number,
-//            'phone_number' => $this->user->phone_number,
-//            'details' => [
-//                'id' => $this->user->id,
-//                'home_address' => $this->user->home_address,
-//                'first_name' => $this->user->first_name,
-//                'last_name' => $this->user->last_name,
-//                'license_type' => $this->license->type,
-//                'last_trip_date' => $this->date_of_last_trip,
-//            ],
-//            'vehicle' => VehicleResource::collection($this->whenLoaded('vehicles')),
+            'phone_number' => $this->user->phone_number,
+            'details' => [
+                'id' => $this->user->id,
+                'home_address' => $this->home_address,
+                'first_name' => $this->user->first_name,
+                'last_name' => $this->user->last_name,
+                'license_type' => $this->license->license_type,
+                'last_trip_date' => $this->date_of_last_trip,
+            ],
+            'vehicle' => VehicleResource::collection($this->whenLoaded('vehicles')),
         ];
     }
 }

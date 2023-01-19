@@ -22,7 +22,7 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $drivers = Driver::first()->get();
+        $drivers = Driver::with('user', 'vehicles')->get();
         return DriverResource::collection($drivers);
     }
 
