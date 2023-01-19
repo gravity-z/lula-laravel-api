@@ -28,15 +28,15 @@ class License extends Model
         'license_type',
     ];
 
-    /**
-     * Attributes that should be cast.
-     *
-     * @var array
-     */
-
-    protected $casts = [
-        'license_type' => 'enum',
-    ];
+//    /**
+//     * Attributes that should be cast.
+//     *
+//     * @var array
+//     */
+//
+//    protected $casts = [
+//        'license_type' => 'enum',
+//    ];
 
     /**
      * Get the Driver records associated with the License type.

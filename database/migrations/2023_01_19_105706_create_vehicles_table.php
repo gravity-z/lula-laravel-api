@@ -21,15 +21,13 @@ class CreateVehiclesTable extends Migration
             $table->bigInteger('model_year');
             $table->boolean('insured');
             $table->date('date_of_last_service')->nullable();
-            $table->bigInteger('passenger_capacity');
-            $table->string('driver_id_number');
-            $table->timestamps();
-
-            #<------------------- Foreign Key Constraints ------------------->
-            $table->foreign('driver_id_number')
-                ->references('id_number')
+            $table->integer('passenger_capacity');
+            $table->foreignId('driver_id')
+                ->constrained()
+                ->references('id')
                 ->on('drivers')
                 ->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

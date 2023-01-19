@@ -9,9 +9,6 @@ class Driver extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_number';
-    public $incrementing = false;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -21,10 +18,10 @@ class Driver extends Model
     protected $fillable = [
         'id_number',
         'user_id',
+        'driver_id',
         'license_id',
         'home_address',
         'date_of_last_trip',
-        'status',
     ];
 
 /**

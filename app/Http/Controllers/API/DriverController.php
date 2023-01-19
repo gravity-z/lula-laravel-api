@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DriverResource;
+use App\Models\Driver;
 use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {
+
+//    public function __invoke(Request $request)
+//    {
+//        return 'Wow';
+//    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +22,8 @@ class DriverController extends Controller
      */
     public function index()
     {
-        //
+        $drivers = Driver::first()->get();
+        return DriverResource::collection($drivers);
     }
 
     /**
