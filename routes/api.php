@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\DriverController;
+use App\Http\Controllers\API\VehicleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('drivers', DriverController::class);
+
+Route::resource('vehicles', VehicleController::class);
+
+Route::get('drivers/{id}/vehicles', VehicleController::class . '@indexByDriverId');
