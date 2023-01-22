@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Driver extends Model
 {
@@ -24,13 +26,23 @@ class Driver extends Model
         'date_of_last_trip',
     ];
 
-/**
-     * Get the User record associated with the Driver.
+    /**
+     * The attributes that should be cast.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @var array<string, string>
      */
 
-    public function user()
+    protected $casts = [
+        'id_number' => 'int',
+    ];
+
+    /**
+     * Get the User record associated with the Driver.
+     *
+     * @return BelongsTo
+     */
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -38,10 +50,10 @@ class Driver extends Model
     /**
      * Get the Vehicles associated with the Driver.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
 
-    public function vehicles()
+    public function vehicles(): HasMany
     {
         return $this->hasMany(Vehicle::class);
     }
@@ -49,10 +61,10 @@ class Driver extends Model
 /**
      * Get the License record associated with the Driver.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
 
-    public function license()
+    public function license(): BelongsTo
     {
         return $this->belongsTo(License::class);
     }

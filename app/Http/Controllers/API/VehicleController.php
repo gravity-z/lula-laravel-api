@@ -20,7 +20,7 @@ class VehicleController extends Controller
     public function index()
     {
         $vehicles = Vehicle::all();
-        return VehicleResource::collection($vehicles);
+        return response()->success(VehicleResource::collection($vehicles));
     }
 
     /**
@@ -34,7 +34,7 @@ class VehicleController extends Controller
     {
         $driver = Driver::findOrFail($id);
         $vehicles = $driver->vehicles()->get();
-        return VehicleResource::collection($vehicles);
+        return response()->success(VehicleResource::collection($vehicles));
     }
 
     /**

@@ -15,7 +15,7 @@ class CreateDriversTable extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->string('id_number')->unique();
+            $table->unsignedBigInteger('id_number')->unique();
             $table->foreignId('user_id')
                 ->constrained()
                 ->references('id')

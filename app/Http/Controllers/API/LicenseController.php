@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Api\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class LicenseController extends Controller

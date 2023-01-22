@@ -24,4 +24,8 @@ Route::resource('drivers', DriverController::class);
 
 Route::resource('vehicles', VehicleController::class);
 
-Route::get('drivers/{id}/vehicles', VehicleController::class . '@indexByDriverId');
+Route::get('driver/{id}/vehicle', VehicleController::class . '@indexByDriverId');
+
+Route::patch('driver/{id}', DriverController::class . '@patch');
+
+Route::put('driver/{id}/details', DriverController::class . '@update');
