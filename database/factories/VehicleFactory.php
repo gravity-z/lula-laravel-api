@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use MongoDB\BSON\UTCDateTime;
 
 class VehicleFactory extends Factory
 {
@@ -19,7 +20,7 @@ class VehicleFactory extends Factory
             'vehicle_model' => $this->faker->randomElement(['Corolla', 'Camry', 'Prius', 'Yaris', 'Auris', 'Avensis', 'Verso', 'Rav4', 'Land Cruiser', 'Hiace', 'Hilux', 'Fortuner', 'Prado', 'C-HR', 'Mirai', 'Crown', 'Century', 'Vellfire', 'Alphard', 'Sienta', 'Vios', 'Altis', 'Wigo', 'Innova', 'Fortuner', 'Hiace', 'Hilux', 'Land Cruiser', 'Prado', 'Vios', 'Altis', 'Wigo', 'Innova', 'Fortuner', 'Hiace', 'Hilux']),
             'model_year' => $this->faker->year($max = 'now'),
             'insured' => $this->faker->boolean,
-            'date_of_last_service' => $this->faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null),
+            'date_of_last_service' => $this->faker->dateTimeThisYear,
             'passenger_capacity' => $this->faker->numberBetween($min = 1, $max = 10),
             'driver_id' => function () {
                 return \App\Models\Driver::inRandomOrder()->first()->id;

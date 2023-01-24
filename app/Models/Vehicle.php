@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Vehicle extends Model
 {
@@ -27,9 +28,22 @@ class Vehicle extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+
+    protected $casts = [
+        'model_year' => 'integer',
+        'insured' => 'boolean',
+        'date_of_last_service' => 'datetime',
+        'passenger_capacity' => 'integer',
+    ];
+
+    /**
      * Get the Driver record associated with the Vehicle.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
 
     public function driver()

@@ -57,6 +57,6 @@ class ApiUpdateResponse extends JsonResponse
             'data' => $this->data,
         ];
 
-        parent::__construct([$payload]);
+        parent::__construct([array_filter($payload)]);
     }
 }

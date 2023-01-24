@@ -191,6 +191,14 @@ class DriverController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $driver = Driver::findOrFail($id);
+        $user = $driver->user;
+        $license = $driver->license;
+
+        if ($driver->delete() && $user->delete() && $license->delete()) {
+            return response()->update('OK', true, 'Driver account deleted!');
+        } else {
+            return response()->delete('ERROR', false, 'Driver account could not be deleted!');
+        }
     }
 }
