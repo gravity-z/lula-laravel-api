@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::delete('drivers/{id}/details', DriverController::class . '@destroy');
+
 Route::resource('drivers', DriverController::class);
 
 Route::resource('vehicles', VehicleController::class);

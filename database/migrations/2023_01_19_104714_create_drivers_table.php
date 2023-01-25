@@ -26,8 +26,8 @@ class CreateDriversTable extends Migration
                 ->references('id')
                 ->on('licenses')
                 ->onDelete('cascade');
-            $table->string('home_address');
-            $table->date('date_of_last_trip');
+            $table->string('home_address')->nullable();
+            $table->date('date_of_last_trip')->nullable();
             $table->timestamps();
         });
     }

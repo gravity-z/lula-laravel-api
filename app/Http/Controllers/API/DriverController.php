@@ -7,6 +7,8 @@ use App\Http\Resources\DriverDetailsResource;
 use App\Http\Resources\DriverResource;
 use App\Http\Resources\DriverUpdateResource;
 use App\Models\Driver;
+use App\Models\License;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,7 +24,12 @@ class DriverController extends Controller
     public function index()
     {
         $drivers = Driver::with('user', 'vehicles', 'license')->get();
-        return response()->success(DriverResource::collection($drivers));
+
+        if ($drivers->isNotEmpty()) {
+            return response()->update('OK', true, 'Drivers found!', DriverResource::collection($drivers));
+        } else {
+            return response()->update('ERROR', false, 'Drivers not found!', DriverResource::collection($drivers));
+        }
     }
 
     /**
@@ -43,7 +50,56 @@ class DriverController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'id_number' => 'required:phone_number|digits:13',
+            'phone_number' => 'required:id_number|digits:10',
+            'home_address' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'licence_type' => 'required|in:A,B,C,D',
+        ], [
+            'id_number.required' => 'The ID number is required',
+            'phone_number.required' => 'The phone number is required',
+            'home_address.required' => 'The home address is required',
+            'first_name.required' => 'The first name is required',
+            'last_name.required' => 'The last name is required',
+            'licence_type.required' => 'The licence type is required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->update('ERROR', false, 'Driver account could not be created!');
+        }
+
+        $validatedData = $validator->validated();
+
+        // Create the user record
+        $user = User::create([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'phone_number' => $validatedData['phone_number'],
+            'email' => 's@lulaloop.co.za',
+            'password' => bcrypt('password'),
+        ]);
+
+        // Create the driver license record
+        $license = License::create([
+            'license_type' => $validatedData['licence_type'],
+        ]);
+
+        // Create the driver record
+        $driver = Driver::create([
+            'user_id' => $user->id,
+            'license_id' => $license->id,
+            'id_number' => $validatedData['id_number'],
+            'home_address' => $validatedData['home_address'],
+        ]);
+
+        if ($user->save() && $driver->save() && $license->save()) {
+            return response()->update('OK', true, 'Driver account created!', new DriverResource($driver));
+        } else {
+            return response()->update('ERROR', false, 'Driver account could not be created!');
+        }
     }
 
     /**
@@ -55,7 +111,9 @@ class DriverController extends Controller
     public function show(int $id)
     {
         $driver = Driver::with('user', 'vehicles', 'license')->findOrFail($id);
-        return response()->success([new DriverResource($driver)]);
+
+        // TODO: check if the driver exists. Error handling
+        return response()->update('OK', true, 'Found driver account!', new DriverResource($driver));
     }
 
     /**
@@ -186,19 +244,38 @@ class DriverController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, int $id)
     {
         $driver = Driver::findOrFail($id);
         $user = $driver->user;
         $license = $driver->license;
 
-        if ($driver->delete() && $user->delete() && $license->delete()) {
-            return response()->update('OK', true, 'Driver account deleted!');
-        } else {
-            return response()->delete('ERROR', false, 'Driver account could not be deleted!');
+        // Delete the driver details
+//        dd($request->getRequestUri());
+        if ($request->is('api/drivers/*/details')) {
+            $user->update([
+                'first_name' => null,
+                'last_name' => null,
+            ]);
+            $driver->update([
+                'home_address' => null,
+                'date_of_last_trip' => null,
+            ]);
+            $license->update([
+                'licence_type' => null,
+            ]);
+            return response()->update('OK', true, 'Driver information deleted!');
+        }
+        else {
+            // Delete the driver account
+            if ($driver->delete() && $user->delete() && $license->delete()) {
+                return response()->update('OK', true, 'Driver account deleted!');
+            } else {
+                return response()->update('ERROR', false, 'Driver account could not be deleted!');
+            }
         }
     }
 }

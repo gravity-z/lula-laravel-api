@@ -21,7 +21,12 @@ class VehicleController extends Controller
     public function index()
     {
         $vehicles = Vehicle::all();
-        return response()->success(VehicleResource::collection($vehicles));
+
+        if ($vehicles->isNotEmpty()) {
+            return response()->update('OK', true, 'Vehicles found!', VehicleResource::collection($vehicles));
+        } else {
+            return response()->update('ERROR', false, 'Vehicles not found!', VehicleResource::collection($vehicles));
+        }
     }
 
     /**
@@ -36,7 +41,13 @@ class VehicleController extends Controller
     {
         $driver = Driver::findOrFail($id);
         $vehicles = $driver->vehicles()->get();
-        return response()->success(VehicleResource::collection($vehicles));
+
+        // check if the driver has any vehicles
+        if ($vehicles->isNotEmpty()) {
+            return response()->update('OK', true, 'Driver vehicle(s) found!', VehicleResource::collection($vehicles));
+        } else {
+            return response()->update('ERROR', false, 'Driver vehicle(s) not found!', VehicleResource::collection($vehicles));
+        }
     }
 
     /**
@@ -57,7 +68,53 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'license_plate_number' => 'required|string|max:255',
+            'vehicle_make' => 'required|string|max:255',
+            'vehicle_model' => 'required|string|max:255',
+            'model_year' => 'required|int',
+            'insured' => 'required|boolean',
+            'date_of_last_service' => 'required|date',
+            'passenger_capacity' => 'required|int',
+            'driver_id' => 'required|int',
+        ], [
+            'license_plate_number.required' => 'License plate number is required',
+            'vehicle_make.required' => 'Vehicle make is required',
+            'vehicle_model.required' => 'Vehicle model is required',
+            'model_year.required' => 'Year is required',
+            'insured.required' => 'Insured is required',
+            'date_of_last_service.required' => 'Date of last service is required',
+            'passenger_capacity.required' => 'Passenger capacity is required',
+            'driver_id.required' => 'Driver ID is required',
+        ]);
+
+        // check the validation
+        if ($validator->fails()) {
+            return response()->update('ERROR', false, 'Vehicle could not be !');
+        }
+
+        $validatedData = $validator->validated();
+        $driver = Driver::findOrFail($validatedData['driver_id']);
+
+        //check if the driver has any vehicles
+        if ($driver->vehicles()->get()->isNotEmpty()) {
+            // check if the driver has a vehicle with the same license plate number
+            $vehicles = $driver->vehicles()->where('license_plate_number', $validatedData['license_plate_number'])->get();
+            if ($vehicles->isNotEmpty()) {
+                return response()->update('ERROR', false, 'Vehicle could not be created!', new VehicleResource($vehicles->first()));
+            }
+        }
+
+        // Create the vehicle record
+        $vehicle = Vehicle::create($validatedData);
+
+        // check if the vehicle was created
+        if ($vehicle) {
+            return response()->update('OK', true, 'Vehicle created!', new VehicleResource($vehicle));
+        } else {
+            return response()->update('ERROR', false, 'Vehicle could not be created!');
+        }
     }
 
     /**
@@ -68,7 +125,7 @@ class VehicleController extends Controller
      */
     public function show(int $id)
     {
-
+        //
     }
 
     /**
@@ -138,6 +195,13 @@ class VehicleController extends Controller
      */
     public function destroy(int $id)
     {
-        //
+        // Delete the vehicle record
+        $vehicle = Vehicle::findOrFail($id);
+
+        if ($vehicle->delete()) {
+            return response()->update('OK', true, 'Vehicle deleted!');
+        } else {
+            return response()->update('ERROR', false, 'Vehicle could not be deleted.');
+        }
     }
 }

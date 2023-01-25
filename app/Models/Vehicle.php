@@ -24,7 +24,7 @@ class Vehicle extends Model
         'insured',
         'date_of_last_service',
         'passenger_capacity',
-        'driver_id_number',
+        'driver_id',
     ];
 
     /**
