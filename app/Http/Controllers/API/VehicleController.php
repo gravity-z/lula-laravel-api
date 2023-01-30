@@ -20,12 +20,16 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        $vehicles = Vehicle::all();
+        try {
+            $vehicles = Vehicle::all();
 
-        if ($vehicles->isNotEmpty()) {
-            return response()->update('OK', true, 'Vehicles found!', VehicleResource::collection($vehicles));
-        } else {
+            if ($vehicles->isNotEmpty()) {
+                return response()->update('OK', true, 'Vehicles found!', VehicleResource::collection($vehicles));
+            }
             return response()->update('ERROR', false, 'Vehicles not found!', VehicleResource::collection($vehicles));
+
+        } catch (\Exception $e) {
+            return response()->update('ERROR', false, 'Vehicles not found!');
         }
     }
 
@@ -39,14 +43,18 @@ class VehicleController extends Controller
 
     public function indexByDriverId(int $id)
     {
-        $driver = Driver::findOrFail($id);
-        $vehicles = $driver->vehicles()->get();
+        try {
+            $driver = Driver::findOrFail($id);
+            $vehicles = $driver->vehicles()->get();
 
-        // check if the driver has any vehicles
-        if ($vehicles->isNotEmpty()) {
-            return response()->update('OK', true, 'Driver vehicle(s) found!', VehicleResource::collection($vehicles));
-        } else {
+            // check if the driver has any vehicles
+            if ($vehicles->isNotEmpty()) {
+                return response()->update('OK', true, 'Driver vehicle(s) found!', VehicleResource::collection($vehicles));
+            }
             return response()->update('ERROR', false, 'Driver vehicle(s) not found!', VehicleResource::collection($vehicles));
+
+        } catch (\Exception $e) {
+            return response()->update('ERROR', false, 'Driver vehicle(s) not found!');
         }
     }
 
@@ -68,51 +76,50 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'license_plate_number' => 'required|string|max:255',
-            'vehicle_make' => 'required|string|max:255',
-            'vehicle_model' => 'required|string|max:255',
-            'model_year' => 'required|int',
-            'insured' => 'required|boolean',
-            'date_of_last_service' => 'required|date',
-            'passenger_capacity' => 'required|int',
-            'driver_id' => 'required|int',
-        ], [
-            'license_plate_number.required' => 'License plate number is required',
-            'vehicle_make.required' => 'Vehicle make is required',
-            'vehicle_model.required' => 'Vehicle model is required',
-            'model_year.required' => 'Year is required',
-            'insured.required' => 'Insured is required',
-            'date_of_last_service.required' => 'Date of last service is required',
-            'passenger_capacity.required' => 'Passenger capacity is required',
-            'driver_id.required' => 'Driver ID is required',
-        ]);
+        try {
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'license_plate_number' => 'required|string|max:255',
+                'vehicle_make' => 'required|string|max:255',
+                'vehicle_model' => 'required|string|max:255',
+                'model_year' => 'required|int',
+                'insured' => 'required|boolean',
+                'date_of_last_service' => 'required|date',
+                'passenger_capacity' => 'required|int',
+                'driver_id' => 'required|int',
+            ], [
+                'license_plate_number.required' => 'License plate number is required',
+                'vehicle_make.required' => 'Vehicle make is required',
+                'vehicle_model.required' => 'Vehicle model is required',
+                'model_year.required' => 'Year is required',
+                'insured.required' => 'Insured is required',
+                'date_of_last_service.required' => 'Date of last service is required',
+                'passenger_capacity.required' => 'Passenger capacity is required',
+                'driver_id.required' => 'Driver ID is required',
+            ]);
 
-        // check the validation
-        if ($validator->fails()) {
-            return response()->update('ERROR', false, 'Vehicle could not be !');
-        }
-
-        $validatedData = $validator->validated();
-        $driver = Driver::findOrFail($validatedData['driver_id']);
-
-        //check if the driver has any vehicles
-        if ($driver->vehicles()->get()->isNotEmpty()) {
-            // check if the driver has a vehicle with the same license plate number
-            $vehicles = $driver->vehicles()->where('license_plate_number', $validatedData['license_plate_number'])->get();
-            if ($vehicles->isNotEmpty()) {
-                return response()->update('ERROR', false, 'Vehicle could not be created!', new VehicleResource($vehicles->first()));
+            // check the validation
+            if ($validator->fails()) {
+                return response()->update('ERROR', false, 'Vehicle could not be !');
             }
-        }
 
-        // Create the vehicle record
-        $vehicle = Vehicle::create($validatedData);
+            $validatedData = $validator->validated();
+            $driver = Driver::findOrFail($validatedData['driver_id']);
 
-        // check if the vehicle was created
-        if ($vehicle) {
+            //check if the driver has any vehicles
+            if ($driver->vehicles()->get()->isNotEmpty()) {
+                // check if the driver has a vehicle with the same license plate number
+                $vehicles = $driver->vehicles()->where('license_plate_number', $validatedData['license_plate_number'])->get();
+                if ($vehicles->isNotEmpty()) {
+                    return response()->update('ERROR', false, 'Vehicle could not be created!', new VehicleResource($vehicles->first()));
+                }
+            }
+
+            // Create the vehicle record
+            $vehicle = Vehicle::create($validatedData);
             return response()->update('OK', true, 'Vehicle created!', new VehicleResource($vehicle));
-        } else {
+
+        } catch (\Exception $e) {
             return response()->update('ERROR', false, 'Vehicle could not be created!');
         }
     }
@@ -148,42 +155,39 @@ class VehicleController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        // validate the update request
-        $validator = Validator::make($request->all(), [
-            'license_plate_number' => 'required|string|max:255',
-            'vehicle_make' => 'required|string|max:255',
-            'vehicle_model' => 'required|string|max:255',
-            'model_year' => 'required|int',
-            'insured' => 'required|boolean',
-            'date_of_last_service' => 'required|date',
-            'passenger_capacity' => 'required|int',
-        ], [
-            'license_plate_number.required' => 'License plate number is required',
-            'vehicle_make.required' => 'Vehicle make is required',
-            'vehicle_model.required' => 'Vehicle model is required',
-            'model_year.required' => 'Year is required',
-            'insured.required' => 'Insured is required',
-            'date_of_last_service.required' => 'Date of last service is required',
-            'passenger_capacity.required' => 'Passenger capacity is required',
-        ]);
+        try {
+            // validate the update request
+            $validator = Validator::make($request->all(), [
+                'license_plate_number' => 'required|string|max:255',
+                'vehicle_make' => 'required|string|max:255',
+                'vehicle_model' => 'required|string|max:255',
+                'model_year' => 'required|int',
+                'insured' => 'required|boolean',
+                'date_of_last_service' => 'required|date',
+                'passenger_capacity' => 'required|int',
+            ], [
+                'license_plate_number.required' => 'License plate number is required',
+                'vehicle_make.required' => 'Vehicle make is required',
+                'vehicle_model.required' => 'Vehicle model is required',
+                'model_year.required' => 'Year is required',
+                'insured.required' => 'Insured is required',
+                'date_of_last_service.required' => 'Date of last service is required',
+                'passenger_capacity.required' => 'Passenger capacity is required',
+            ]);
 
-        $vehicle = Vehicle::findOrFail($id);
+            $vehicle = Vehicle::findOrFail($id);
 
-        if ($validator->fails()) {
-            return response()->update('ERROR', false, 'Vehicle details could not be updated.', new VehicleResource($vehicle));
-        } else {
+            if ($validator->fails()) {
+                return response()->update('ERROR', false, 'Vehicle details could not be updated.', new VehicleResource($vehicle));
+            }
             $validatedData = $validator->validated();
 
             // Update the vehicle record
             $vehicle->update($validatedData);
+            return response()->update('OK', true, 'Vehicle details updated.', new VehicleResource($vehicle));
 
-            // check if update was successful and return appropriate response
-            $vehicle->save();
-            if ($vehicle->wasChanged()) {
-                return response()->update('OK', true, 'Vehicle details updated.', new VehicleResource($vehicle));
-            } else {
-                return response()->update('ERROR', false, 'Vehicle details could not be updated.', new VehicleResource($vehicle));
-            }
+        } catch (\Exception $e) {
+            return response()->update('ERROR', false, 'Vehicle details could not be updated.');
         }
     }
 
@@ -195,12 +199,16 @@ class VehicleController extends Controller
      */
     public function destroy(int $id)
     {
-        // Delete the vehicle record
-        $vehicle = Vehicle::findOrFail($id);
+        try {
+            // Delete the vehicle record
+            $vehicle = Vehicle::findOrFail($id);
 
-        if ($vehicle->delete()) {
-            return response()->update('OK', true, 'Vehicle deleted!');
-        } else {
+            if ($vehicle->delete()) {
+                return response()->update('OK', true, 'Vehicle deleted!');
+            } else {
+                return response()->update('ERROR', false, 'Vehicle could not be deleted.');
+            }
+        } catch (\Exception $e) {
             return response()->update('ERROR', false, 'Vehicle could not be deleted.');
         }
     }
