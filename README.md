@@ -32,6 +32,13 @@ The API is for clients so that they can add drivers to the system, update their 
 ## Driver Endpoints
 - `Create Driver` - `POST` - `http://localhost:8000/api/drivers`
   - Create a new driver.
+  - **BODY**:
+    - "id_number": _int_
+    - "phone_number": _int_
+    - "home_address": _string_
+    - "first_name": _string_
+    - "last_name": _string_
+    - "licence_type": One of the following: _"A", "B", "C", "D"_
 ---
 - `Read Drivers` - `GET` - `http://localhost:8000/api/drivers`
   - Returns a list of all the drivers with their personal information and vehicle details.
@@ -41,18 +48,18 @@ The API is for clients so that they can add drivers to the system, update their 
 ---
 - `Update Driver` - `PATCH` - `http://localhost:8000/api/drivers/{id}`
   - Update the driver id or phone number.
-- **BODY**:
-  - "id_number": _int_,
-  - "phone_number": _int_
+  - **BODY**:
+    - "id_number": _int_,
+    - "phone_number": _int_
 ---
 - `Update Driver Details` - `PUT` - `http://localhost:8000/api/drivers/{id}/details`
   - Update the details for a driver.
-- **BODY**:
-    - "home_address": _string_
-    - "first_name": _string_
-    - "last_name": _string_
-    - "licence_type": One of the following: _"A", "B", "C", "D"_
-    - "last_trip_date": _date (YYYY-MM-DD)_
+  - **BODY**:
+      - "home_address": _string_
+      - "first_name": _string_
+      - "last_name": _string_
+      - "licence_type": One of the following: _"A", "B", "C", "D"_
+      - "last_trip_date": _date (YYYY-MM-DD)_
 ---
 - `Delete Driver` - `DELETE` - `http://localhost:8000/api/drivers/{id}`
   - Delete the driver account.
@@ -65,6 +72,15 @@ The API is for clients so that they can add drivers to the system, update their 
 ## Vehicle Endpoints
 - `Create Vehicle` - `POST` - `http://localhost:8000/api/vehicles`
   - Create a new vehicle.
+  - **BODY**:
+      - "licence_plate_number": _string_
+      - "vehicle_make": _string_
+      - "vehicle_model": _string_
+      - "model_year": _int_
+      - "insured": _int (0 or 1)_
+      - "date_of_last_service": _date (YYYY-MM-DD)_
+      - "passenger_capacity": _int_
+      - "driver_id": _int_
 ---
 - `Read Vehicles` - `GET` - `http://localhost:8000/api/vehicles`
   - Returns a list of vehicles
@@ -74,15 +90,15 @@ The API is for clients so that they can add drivers to the system, update their 
 ---
 - `Update Vehicle` - `PUT` - `http://localhost:8000/api/vehicles/{id}`
   - Update the vehicle information for a vehicle with id
-- **BODY**:
-    - "id": _int_
-    - "licence_plate_number": _string_
-    - "vehicle_make": _string_
-    - "vehicle_model": _string_
-    - "year": _int_
-    - "insured": _boolean_
-    - "service_date": _date (YYYY-MM-DD)_
-    - "capacity": _int_
+  - **BODY**:
+      - "id": _int_
+      - "license_plate_number": _string_
+      - "vehicle_make": _string_
+      - "vehicle_model": _string_
+      - "model_year": _int_
+      - "insured": _int (0 or 1)_
+      - "date_of_last_service": _date (YYYY-MM-DD)_
+      - "passenger_capacity": _int_
 ---
 - `Delete Vehicle` - `DELETE` - `http://localhost:8000/api/vehicles/{id}`
   - Delete the driver vehicle information.

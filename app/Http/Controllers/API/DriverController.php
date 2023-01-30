@@ -83,7 +83,7 @@ class DriverController extends Controller
                 'first_name' => $validatedData['first_name'],
                 'last_name' => $validatedData['last_name'],
                 'phone_number' => $validatedData['phone_number'],
-                'email' => 's@lulaloop.co.za',
+                'email' => 'sa@lulaloop.co.za',
                 'password' => bcrypt('password'),
             ]);
 
@@ -170,7 +170,7 @@ class DriverController extends Controller
             if (array_key_exists('home_address', $validatedData) && array_key_exists('last_trip_date', $validatedData)) {
                 $driver->update([
                     'home_address' => $validatedData['home_address'],
-                    'last_trip_date' => $validatedData['last_trip_date'],
+                    'date_of_last_trip' => $validatedData['last_trip_date'],
                 ]);
             }
 

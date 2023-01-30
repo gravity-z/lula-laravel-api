@@ -100,7 +100,7 @@ class VehicleController extends Controller
 
             // check the validation
             if ($validator->fails()) {
-                return response()->update('ERROR', false, 'Vehicle could not be !');
+                return response()->update('ERROR', false, 'Vehicle could not be created!');
             }
 
             $validatedData = $validator->validated();
@@ -158,6 +158,7 @@ class VehicleController extends Controller
         try {
             // validate the update request
             $validator = Validator::make($request->all(), [
+                'id' => 'required|int',
                 'license_plate_number' => 'required|string|max:255',
                 'vehicle_make' => 'required|string|max:255',
                 'vehicle_model' => 'required|string|max:255',
@@ -166,6 +167,7 @@ class VehicleController extends Controller
                 'date_of_last_service' => 'required|date',
                 'passenger_capacity' => 'required|int',
             ], [
+                'id.required' => 'Vehicle ID is required',
                 'license_plate_number.required' => 'License plate number is required',
                 'vehicle_make.required' => 'Vehicle make is required',
                 'vehicle_model.required' => 'Vehicle model is required',
