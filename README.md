@@ -31,22 +31,22 @@ The API is for clients so that they can add drivers to the system, update their 
 # API Endpoints
 ## Driver Endpoints
 - `Create Driver` - `POST` - `http://localhost:8000/api/drivers`
-- - Create a new driver.
+  - Create a new driver.
 ---
 - `Read Drivers` - `GET` - `http://localhost:8000/api/drivers`
-- - Returns a list of all the drivers with their personal information and vehicle details.
+  - Returns a list of all the drivers with their personal information and vehicle details.
 ---
 - `Read Driver` - `GET` - `http://localhost:8000/api/drivers/{id}`
-- - Returns a single driver. This response should include all their personal and vehicle information.
+  - Returns a single driver. This response should include all their personal and vehicle information.
 ---
 - `Update Driver` - `PATCH` - `http://localhost:8000/api/drivers/{id}`
-- - Update the driver id or phone number.
+  - Update the driver id or phone number.
 - **BODY**:
   - "id_number": _int_,
   - "phone_number": _int_
 ---
 - `Update Driver Details` - `PUT` - `http://localhost:8000/api/drivers/{id}/details`
-- - Update the details for a driver.
+  - Update the details for a driver.
 - **BODY**:
     - "home_address": _string_
     - "first_name": _string_
@@ -55,25 +55,25 @@ The API is for clients so that they can add drivers to the system, update their 
     - "last_trip_date": _date (YYYY-MM-DD)_
 ---
 - `Delete Driver` - `DELETE` - `http://localhost:8000/api/drivers/{id}`
-- - Delete the driver account.
-- - Deleting a driver account should automatically delete the details and vehicle information of that driver.
+  - Delete the driver account.
+    - Deleting a driver account should automatically delete the details and vehicle information of that driver.
 ---
 - `Delete Driver Details` - `DELETE` - `http://localhost:8000/api/drivers/{id}/details`
-- - Delete the driver information.
+  - Delete the driver information.
 ---
 
 ## Vehicle Endpoints
 - `Create Vehicle` - `POST` - `http://localhost:8000/api/vehicles`
-- - Create a new vehicle.
+  - Create a new vehicle.
 ---
 - `Read Vehicles` - `GET` - `http://localhost:8000/api/vehicles`
-- - Returns a list of vehicles
+  - Returns a list of vehicles
 ---
 - `Read Vehicle` - `GET` - `http://localhost:8000/api/drivers/{id}/vehicle`
-- - Return the vehicle(s) information for a vehicle when specifying the driver ID.
+  - Return the vehicle(s) information for a vehicle when specifying the driver ID.
 ---
 - `Update Vehicle` - `PUT` - `http://localhost:8000/api/vehicles/{id}`
-- - Update the vehicle information for a vehicle with id
+  - Update the vehicle information for a vehicle with id
 - **BODY**:
     - "id": _int_
     - "licence_plate_number": _string_
@@ -85,7 +85,7 @@ The API is for clients so that they can add drivers to the system, update their 
     - "capacity": _int_
 ---
 - `Delete Vehicle` - `DELETE` - `http://localhost:8000/api/vehicles/{id}`
-- - Delete the driver vehicle information.
+  - Delete the driver vehicle information.
 
 # Data Validation
 In order to ensure the integrity and reliability of the data stored in the system, it is important to validate incoming data.
