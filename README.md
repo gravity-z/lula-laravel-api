@@ -29,7 +29,7 @@ The API is for clients so that they can add drivers to the system, update their 
 - You can use the API to create, read, update and delete vehicles.
 
 # API Endpoints
-## Driver Endpoints
+## 1. Driver Endpoints
 - `Create Driver` - `POST` - `http://localhost:8000/api/drivers`
   - Create a new driver.
   - **BODY**:
@@ -69,7 +69,7 @@ The API is for clients so that they can add drivers to the system, update their 
   - Delete the driver information.
 ---
 
-## Vehicle Endpoints
+## 2. Vehicle Endpoints
 - `Create Vehicle` - `POST` - `http://localhost:8000/api/vehicles`
   - Create a new vehicle.
   - **BODY**:
