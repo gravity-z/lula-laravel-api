@@ -22,11 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::delete('drivers/{id}/details', DriverController::class . '@destroy');
 
-Route::get('driver/{id}/vehicle', VehicleController::class . '@indexByDriverId');
+Route::get('drivers/{id}/vehicle', VehicleController::class . '@indexByDriverId');
 
-Route::patch('driver/{id}', DriverController::class . '@patch');
+Route::patch('drivers/{id}', DriverController::class . '@patch');
 
-Route::put('driver/{id}/details', DriverController::class . '@update');
+Route::put('drivers/{id}/details', DriverController::class . '@update');
 
 Route::resource('drivers', DriverController::class);
 

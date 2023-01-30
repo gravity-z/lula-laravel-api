@@ -7,58 +7,91 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Introduction
+This is a Laravel CRUD API. It is a simple API that allows you to create, read, update and delete users.
+The API is for clients so that they can add drivers to the system, update their information, delete their information, or quickly see a list of drivers or vehicles at a glance.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
+- Laravel 8.0 or higher is required.
+- PHP 8.0 or higher is required.
+- Composer 2.5.1 or higher is required.
+- MySQL is required.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
+- Clone the repository to your local machine.
+- Install [Composer](https://getcomposer.org/download/) for your operating system.
+- Install [XAMPP](https://www.apachefriends.org/) for your operating system.
+- Start the Apache and MySQL modules in XAMPP.
+- Run `composer install` to install the dependencies.
+- Run `php artisan migrate` to create the database tables.
+- Run `php artisan db:seed` to seed the database tables.
+- Run `php artisan serve` to start the server.
+- Open your browser and go to `http://localhost:8000/` to view the API.
+- You can also use [Postman](https://www.postman.com/downloads/) to test the API.
+- You can also use [Insomnia](https://insomnia.rest/download/) to test the API.
+- You can also use [DBeaver](https://dbeaver.io/download/) to view the database.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Usage
+- You can use the API to create, read, update and delete drivers.
+- You can use the API to create, read, update and delete vehicles.
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## API Endpoints
+- `Create Driver` - `POST` - `http://localhost:8000/api/drivers`
+- - Create a new driver.
+---
+- `Create Vehicle` - `POST` - `http://localhost:8000/api/vehicles`
+- - Create a new vehicle.
+---
+- `Read Drivers` - `GET` - `http://localhost:8000/api/drivers`
+- - Returns a list of all the drivers with their personal information and vehicle details.
+---
+- `Read Vehicles` - `GET` - `http://localhost:8000/api/vehicles`
+- - Returns a list of vehicles
+---
+- `Read Driver` - `GET` - `http://localhost:8000/api/drivers/{id}`
+- - Returns a single driver. This response should include all their personal and vehicle information.
+---
+- `Read Vehicle` - `GET` - `http://localhost:8000/api/drivers/{id}/vehicle`
+- - Return the vehicle(s) information for a vehicle when specifying the driver ID.
+---
+- `Update Driver` - `PATCH` - `http://localhost:8000/api/drivers/{id}`
+- - Update the driver id or phone number.
+- - BODY:
+    {
+    "id_number": 23443223777,
+    "phone_number": 940105432
+    }
+---
+- `Update Driver Details` - `PUT` - `http://localhost:8000/api/drivers/{id}/details`
+- - Update the details for a driver.
+- - BODY:
+{
+"home_address": "4 LULA road, Cape Town, Woodstock, South Africa, 8001",
+"first_name": "John",
+"last_name": "Doe",
+"licence_type": "B",
+"last_trip_date": "2022-10-12T08:18:09.000000Z"
+}
+---
+- `Update Vehicle` - `PUT` - `http://localhost:8000/api/vehicles/{id}`
+- - Update the vehicle information for a vehicle with id
+- - BODY:
+    {
+    "id": 32,
+    "licence_plate_number": "CJ3443121234",
+    "vehicle_make": "HONDA",
+    "vehicle_model": "ACCORD",
+    "year": 2001,
+    "insured": true,
+    "service_date": "2022-10-12T08:18:09.000000Z",
+    "capacity": 6
+    }
+---
+- `Delete Driver` - `DELETE` - `http://localhost:8000/api/drivers/{id}`
+- - Delete the driver account.
+- - Deleting a driver account should automatically delete the details and vehicle information of that driver.
+---
+- `Delete Driver Details` - `DELETE` - `http://localhost:8000/api/drivers/{id}/details`
+- - Delete the driver information.
+- `Delete Vehicle` - `DELETE` - `http://localhost:8000/api/vehicles/{id}`
+- - Delete the driver vehicle information.
