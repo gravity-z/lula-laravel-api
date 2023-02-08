@@ -20,7 +20,6 @@ class Driver extends Model
     protected $fillable = [
         'id_number',
         'user_id',
-        'driver_id',
         'license_id',
         'home_address',
         'date_of_last_trip',
@@ -34,6 +33,7 @@ class Driver extends Model
 
     protected $casts = [
         'id_number' => 'int',
+        'date_of_last_trip' => 'date',
     ];
 
     /**

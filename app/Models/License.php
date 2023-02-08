@@ -10,15 +10,6 @@ class License extends Model
     use HasFactory;
 
     /**
-     * constants for license type
-     * @var string
-     */
-    const LICENSE_TYPE_A = 'A';
-    const LICENSE_TYPE_B = 'B';
-    const LICENSE_TYPE_C = 'C';
-    const LICENSE_TYPE_D = 'D';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -27,16 +18,6 @@ class License extends Model
     protected $fillable = [
         'license_type',
     ];
-
-//    /**
-//     * Attributes that should be cast.
-//     *
-//     * @var array
-//     */
-//
-//    protected $casts = [
-//        'license_type' => 'enum',
-//    ];
 
     /**
      * Get the Driver records associated with the License type.

@@ -36,7 +36,7 @@ class Vehicle extends Model
     protected $casts = [
         'model_year' => 'integer',
         'insured' => 'boolean',
-        'date_of_last_service' => 'datetime',
+        'date_of_last_service' => 'date',
         'passenger_capacity' => 'integer',
     ];
 
@@ -46,7 +46,7 @@ class Vehicle extends Model
      * @return BelongsTo
      */
 
-    public function driver()
+    public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class, 'driver_id_number', 'id_number');
     }

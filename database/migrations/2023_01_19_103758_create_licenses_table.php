@@ -15,7 +15,7 @@ class CreateLicensesTable extends Migration
     {
         Schema::create('licenses', function (Blueprint $table) {
             $table->id();
-            $table->enum('license_type', ['A', 'B', 'C', 'D'])->nullable();
+            $table->char('license_type', length: 1)->nullable();
             $table->timestamps();
         });
     }

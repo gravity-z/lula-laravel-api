@@ -62,7 +62,7 @@ class DriverController extends Controller
                 'home_address' => 'required|string|max:255',
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'licence_type' => 'required|in:A,B,C,D',
+                'licence_type' => 'required|in:A,B,C,D|size:1',
             ], [
                 'id_number.required' => 'The ID number is required',
                 'phone_number.required' => 'The phone number is required',
@@ -115,9 +115,9 @@ class DriverController extends Controller
     public function show(int $id)
     {
         try {
-        $driver = Driver::with('user', 'vehicles', 'license')->findOrFail($id);
+            $driver = Driver::with('user', 'vehicles', 'license')->findOrFail($id);
 
-        return response()->update('OK', true, 'Found driver account!', new DriverResource($driver));
+            return response()->update('OK', true, 'Found driver account!', new DriverResource($driver));
         } catch (\Exception $e) {
             return response()->update('ERROR', false, 'Could not find driver account!', []);
         }
@@ -149,7 +149,7 @@ class DriverController extends Controller
                 'home_address' => 'required|string|max:255',
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'licence_type' => 'required|in:A,B,C,D',
+                'licence_type' => 'required|in:A,B,C,D|size:1',
                 'last_trip_date' => 'required|date',
             ], [
                 'home_address.required' => 'The home address is required',

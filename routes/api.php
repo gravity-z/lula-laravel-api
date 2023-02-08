@@ -20,14 +20,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::delete('drivers/{id}/details', DriverController::class . '@destroy');
-
-Route::get('drivers/{id}/vehicle', VehicleController::class . '@indexByDriverId');
-
-Route::patch('drivers/{id}', DriverController::class . '@patch');
-
-Route::put('drivers/{id}/details', DriverController::class . '@update');
-
-Route::resource('drivers', DriverController::class);
+Route::group(['prefix' => 'drivers'], function () {
+    Route::get('{id}', DriverController::class . '@show');
+    Route::get('{id}/vehicle', VehicleController::class . '@indexByDriverId');
+    Route::delete('{id}/details', DriverController::class . '@destroy');
+    Route::delete('{id}', DriverController::class . '@destroy');
+    Route::patch('{id}', DriverController::class . '@patch');
+    Route::put('{id}/details', DriverController::class . '@update');
+    Route::resource('/', DriverController::class);
+});
 
 Route::resource('vehicles', VehicleController::class);
