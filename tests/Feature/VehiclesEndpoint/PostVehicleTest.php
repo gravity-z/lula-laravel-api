@@ -5,6 +5,7 @@ namespace Tests\Feature\VehiclesEndpoint;
 use App\Models\Driver;
 use App\Models\License;
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -101,16 +102,32 @@ class PostVehicleTest extends TestCase
             'driver_id' => $payload['driver_id'],
         ]);
 
-//        dd($data);
-//        $response->assertJsonFragment([
-//            'id' => $data[0]['data']['id'],
-//            'license_plate_number' => $payload['license_plate_number'],
-//            'vehicle_make' => $payload['vehicle_make'],
-//            'vehicle_model' => $payload['vehicle_model'],
-//            'year' => $payload['model_year'],
-//            'insured' => $payload['insured'],
-//            'service_date' => $payload['date_of_last_service'],
-//            'capacity' => $payload['passenger_capacity'],
-//        ]);
+        $response->assertJsonFragment([
+            'license_plate_number' => $payload['license_plate_number'],
+            'vehicle_make' => $payload['vehicle_make'],
+            'vehicle_model' => $payload['vehicle_model'],
+            'year' => $data[0]['data']['year'],
+            'insured' => $payload['insured'],
+            'service_date' => $payload['date_of_last_service'],
+            'capacity' => $payload['passenger_capacity'],
+        ]);
+
+        $response->assertJsonStructure([
+            [
+                'status',
+                'success',
+                'message',
+                'data' => [
+                    'id',
+                    'license_plate_number',
+                    'vehicle_make',
+                    'vehicle_model',
+                    'year',
+                    'insured',
+                    'service_date',
+                    'capacity',
+                ],
+            ]
+        ]);
     }
 }
