@@ -21,8 +21,22 @@ class PutDriverIdDetailsTest extends TestCase
      */
     public function test_put_driver_details_status_code_success(): void
     {
-        $response = $this->put('api/drivers/1/details');
+        // Arrange
+        User::factory()->create();
+        License::factory()->create();
+        $driver = Driver::factory()->create();
+        $payload = [
+            'home_address' => $this->faker->address,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'licence_type' => 'A',
+            'last_trip_date' => '2023-01-14T00:00:00.000000Z',
+        ];
 
+        // Act
+        $response = $this->put("api/drivers/{$driver->id}/details", $payload);
+
+        // Assert
         $response->assertStatus(200);
     }
 
@@ -33,9 +47,23 @@ class PutDriverIdDetailsTest extends TestCase
      */
     public function test_put_driver_details_status_code_failure(): void
     {
-        $response = $this->put('api/drivers/1/detail');
+        // Arrange
+        User::factory()->create();
+        License::factory()->create();
+        $driver = Driver::factory()->create();
+        $payload = [
+            'home_address' => $this->faker->address,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'licence_type' => 'E',
+            'last_trip_date' => '2023-01-14T00:00:00.000000Z',
+        ];
 
-        $response->assertStatus(404);
+        // Act
+        $response = $this->put("api/drivers/{$driver->id}/details", $payload);
+
+        // Assert
+        $response->assertStatus(400);
     }
 
     /**

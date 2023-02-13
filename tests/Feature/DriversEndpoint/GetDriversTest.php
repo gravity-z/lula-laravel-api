@@ -22,8 +22,15 @@ class GetDriversTest extends TestCase
      */
     public function test_get_drivers_status_code_success(): void
     {
+        // Arrange
+        User::factory()->create();
+        License::factory()->create();
+        Driver::factory()->create();
+
+        // Act
         $response = $this->get('api/drivers');
 
+        // Assert
         $response->assertStatus(200);
     }
 
@@ -34,8 +41,15 @@ class GetDriversTest extends TestCase
      */
     public function test_get_drivers_status_code_failure(): void
     {
-        $response = $this->get('api/driver');
+        // Arrange
+        User::factory()->create();
+        License::factory()->create();
 
+
+        // Act
+        $response = $this->get('api/drivers');
+
+        // Assert
         $response->assertStatus(404);
     }
 
@@ -145,7 +159,7 @@ class GetDriversTest extends TestCase
         $data = $response->json();
 
         // Assert
-        $response->assertStatus(200);
+        $response->assertStatus(404);
         $this->assertCount(0, $data[0]['data']);
         $response->assertJson([
             [

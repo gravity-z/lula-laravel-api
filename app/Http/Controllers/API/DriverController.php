@@ -21,18 +21,21 @@ class DriverController extends Controller
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $drivers = Driver::with('user', 'vehicles', 'license')->get();
+            $page = $request->input('page', 1);
+            $perPage = $request->input('per_page', 10);
+
+            $drivers = Driver::with('user', 'vehicles', 'license')->paginate($perPage, ['*'], 'page', $page);
 
             if ($drivers->isNotEmpty()) {
-                return response()->update('OK', true, 'Drivers found!', DriverResource::collection($drivers));
+                return response()->update('OK', true, 'Drivers found!', DriverResource::collection($drivers), 200);
             } else {
-                return response()->update('ERROR', false, 'Drivers not found!', DriverResource::collection($drivers));
+                return response()->update('ERROR', false, 'Drivers not found!', DriverResource::collection($drivers), 404);
             }
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Drivers not found!', []);
+            return response()->update('ERROR', false, 'Drivers not found!', [], 404);
         }
     }
 
@@ -73,7 +76,7 @@ class DriverController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->update('ERROR', false, 'Driver account could not be created!');
+                return response()->update('ERROR', false, 'Driver account could not be created!', 400);
             }
 
             $validatedData = $validator->validated();
@@ -99,10 +102,10 @@ class DriverController extends Controller
                 'id_number' => $validatedData['id_number'],
                 'home_address' => $validatedData['home_address'],
             ]);
-            return response()->update('OK', true, 'Driver account created!', new DriverResource($driver));
+            return response()->update('OK', true, 'Driver account created!', new DriverResource($driver), 201);
 
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Driver account could not be created!');
+            return response()->update('ERROR', false, 'Driver account could not be created!', 500);
         }
     }
 
@@ -117,9 +120,9 @@ class DriverController extends Controller
         try {
             $driver = Driver::with('user', 'vehicles', 'license')->findOrFail($id);
 
-            return response()->update('OK', true, 'Found driver account!', new DriverResource($driver));
+            return response()->update('OK', true, 'Found driver account!', new DriverResource($driver), 200);
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Could not find driver account!', []);
+            return response()->update('ERROR', false, 'Could not find driver account!', [], 404);
         }
     }
 
@@ -162,7 +165,7 @@ class DriverController extends Controller
             $driver = Driver::findOrFail($id);
 
             if ($validator->fails()) {
-                return response()->update('ERROR', false, 'Driver account could not be updated!', new DriverDetailsResource($driver));
+                return response()->update('ERROR', false, 'Driver account could not be updated!', new DriverDetailsResource($driver), 400);
             }
             $validatedData = $validator->validated();
 
@@ -191,10 +194,10 @@ class DriverController extends Controller
                 ]);
             }
 
-            return response()->update('OK', true, 'Driver information updated!', new DriverDetailsResource($driver));
+            return response()->update('OK', true, 'Driver information updated!', new DriverDetailsResource($driver), 200);
 
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Driver account could not be updated!', []);
+            return response()->update('ERROR', false, 'Driver account could not be updated!', [], 500);
         }
     }
 
@@ -221,7 +224,7 @@ class DriverController extends Controller
             $driver = Driver::findOrFail($id);
 
             if ($validator->fails()) {
-                return response()->update('ERROR', false, 'Driver account could not be updated!', new DriverUpdateResource($driver));
+                return response()->update('ERROR', false, 'Driver account could not be updated!', new DriverUpdateResource($driver), 400);
             }
             $validatedData = $validator->validated();
 
@@ -239,10 +242,10 @@ class DriverController extends Controller
                     'phone_number' => $validatedData['phone_number'],
                 ]);
             }
-            return response()->update('OK', true, 'Driver account updated!', new DriverUpdateResource($driver));
+            return response()->update('OK', true, 'Driver account updated!', new DriverUpdateResource($driver), 200);
 
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Driver account could not be updated!', []);
+            return response()->update('ERROR', false, 'Driver account could not be updated!', [], 500);
         }
     }
 
@@ -261,10 +264,10 @@ class DriverController extends Controller
                 $license = $driver->license;
                 $license->delete();
 
-                return response()->update('OK', true, 'Driver information deleted!');
+                return response()->update('OK', true, 'Driver information deleted!', 200);
             }
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Driver information could not be deleted!');
+            return response()->update('ERROR', false, 'Driver information could not be deleted!', 500);
         }
 
             // Delete the driver account
@@ -275,9 +278,9 @@ class DriverController extends Controller
 
             $user->delete();
             $license->delete();
-            return response()->update('OK', true, 'Driver account deleted!');
+            return response()->update('OK', true, 'Driver account deleted!', 200);
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Driver account could not be deleted!');
+            return response()->update('ERROR', false, 'Driver account could not be deleted!', 500);
         }
     }
 }

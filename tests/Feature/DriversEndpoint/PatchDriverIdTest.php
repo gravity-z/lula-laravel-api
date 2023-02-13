@@ -266,7 +266,7 @@ class PatchDriverIdTest extends TestCase
         $data = $response->json();
 
         // Assert
-        $response->assertStatus(200);
+        $response->assertStatus(400);
         $this->assertEquals($driver->id, $data[0]['data']['id']);
         $this->assertNotEquals($payload['id_number'], $data[0]['data']['id_number']);
         $this->assertNotEquals($payload['phone_number'], $data[0]['data']['phone_number']);
@@ -329,7 +329,7 @@ class PatchDriverIdTest extends TestCase
         $data = $response->json();
 
         // Assert
-        $response->assertStatus(200);
+        $response->assertStatus(400);
         $this->assertEquals($driver->id, $data[0]['data']['id']);
         $this->assertNotEquals($payload['id_number'], $data[0]['data']['id_number']);
 
@@ -387,7 +387,7 @@ class PatchDriverIdTest extends TestCase
         $data = $response->json();
 
         // Assert
-        $response->assertStatus(200);
+        $response->assertStatus(400);
         $this->assertEquals($driver->id, $data[0]['data']['id']);
         $this->assertNotEquals($payload['phone_number'], $data[0]['data']['phone_number']);
 

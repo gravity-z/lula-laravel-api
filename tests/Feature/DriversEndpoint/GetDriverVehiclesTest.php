@@ -120,7 +120,7 @@ class GetDriverVehiclesTest extends TestCase
         $data = $response->json();
 
         // Assert
-        $response->assertStatus(200);
+        $response->assertStatus(404);
         $this->assertCount(0, $data[0]['data']);
         $response->assertJson([
             [

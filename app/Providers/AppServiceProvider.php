@@ -28,8 +28,8 @@ class AppServiceProvider extends ServiceProvider
         // Remove the wrapping of the JSON response e.g. {"data": {...}}
 //        JsonResource::withoutWrapping();
 
-        Response::macro('update', function ($status, $success, $message, $data = null) {
-            return new ApiResponse($status, $success, $message, $data);
+        Response::macro('update', function ($status, $success, $message, $data = null, $statusCode = 200) {
+            return new ApiResponse($status, $success, $message, $statusCode, $data);
         });
     }
 }

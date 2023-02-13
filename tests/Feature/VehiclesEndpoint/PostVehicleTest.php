@@ -74,7 +74,7 @@ class PostVehicleTest extends TestCase
         $data = $response->json();
 
         // Assert
-        $response->assertStatus(200);
+        $response->assertStatus(201);
         $this->assertEquals($payload['license_plate_number'], $data[0]['data']['license_plate_number']);
         $this->assertEquals($payload['vehicle_make'], $data[0]['data']['vehicle_make']);
         $this->assertEquals($payload['vehicle_model'], $data[0]['data']['vehicle_model']);
@@ -127,6 +127,126 @@ class PostVehicleTest extends TestCase
                     'service_date',
                     'capacity',
                 ],
+            ]
+        ]);
+    }
+
+    /**
+     * Test the POST /vehicles endpoint.
+     * Create a new vehicle.
+     * No vehicle created because driver doesn't exist.
+     *
+     * @return void
+     */
+    public function test_post_vehicle_with_driver_not_found(): void
+    {
+        // Arrange
+        User::factory()->create();
+        License::factory()->create();
+        $payload = [
+            'license_plate_number' => $this->faker->unique()->regexify('[A-Z]{2} [0-9]{2} [A-Z]{2}'),
+            'vehicle_make' => $this->faker->randomElement(['Toyota', 'Ford', 'BMW', 'Mercedes']),
+            'vehicle_model' => $this->faker->randomElement(['Camry', 'Fiesta', 'X5', 'C-Class']),
+            'model_year' => $this->faker->year($max = 'now'),
+            'insured' => $this->faker->boolean,
+            'date_of_last_service' => '2023-01-14T00:00:00.000000Z',
+            'passenger_capacity' => $this->faker->numberBetween($min = 1, $max = 10),
+            'driver_id' => 1,
+        ];
+
+        // Act
+        $response = $this->post('api/vehicles', $payload);
+        $data = $response->json();
+
+        // Assert
+        $response->assertStatus(200);
+        $this->assertEquals('Vehicle could not be created!', $data[0]['message']);
+
+        $response->assertJson([
+            [
+                'status' => 'ERROR',
+                'success' => false,
+                'message' => 'Vehicle could not be created!',
+            ]
+        ]);
+
+        $this->assertDatabaseMissing('vehicles', [
+            'license_plate_number' => $payload['license_plate_number'],
+            'vehicle_make' => $payload['vehicle_make'],
+            'vehicle_model' => $payload['vehicle_model'],
+            'model_year' => $payload['model_year'],
+            'insured' => $payload['insured'],
+            'date_of_last_service' => $payload['date_of_last_service'],
+            'passenger_capacity' => $payload['passenger_capacity'],
+            'driver_id' => $payload['driver_id'],
+        ]);
+
+        $response->assertJsonStructure([
+            [
+                'status',
+                'success',
+                'message',
+            ]
+        ]);
+    }
+
+    /**
+     * Test the POST /vehicles endpoint.
+     * Create a new vehicle.
+     * No vehicle created because license plate number already exists.
+     *
+     * @return void
+     */
+    public function test_post_vehicle_with_license_plate_number_already_exists(): void
+    {
+        // Arrange
+        User::factory()->create();
+        License::factory()->create();
+        $driver = Driver::factory()->create();
+        $vehicle = Vehicle::factory()->create();
+        $payload = [
+            'license_plate_number' => $vehicle->license_plate_number,
+            'vehicle_make' => $this->faker->randomElement(['Toyota', 'Ford', 'BMW', 'Mercedes']),
+            'vehicle_model' => $this->faker->randomElement(['Camry', 'Fiesta', 'X5', 'C-Class']),
+            'model_year' => $this->faker->year($max = 'now'),
+            'insured' => $this->faker->boolean,
+            'date_of_last_service' => '2023-01-14T00:00:00.000000Z',
+            'passenger_capacity' => $this->faker->numberBetween($min = 1, $max = 10),
+            'driver_id' => $driver->id,
+        ];
+
+        // Act
+        $response = $this->post('api/vehicles', $payload);
+        $data = $response->json();
+
+        // Assert
+        $response->assertStatus(400);
+        $this->assertEquals('Vehicle could not be created!', $data[0]['message']);
+
+        $response->assertJson([
+            [
+                'status' => 'ERROR',
+                'success' => false,
+                'message' => 'Vehicle could not be created!',
+            ]
+        ]);
+
+        $this->assertDatabaseMissing('vehicles', [
+            'license_plate_number' => $payload['license_plate_number'],
+            'vehicle_make' => $payload['vehicle_make'],
+            'vehicle_model' => $payload['vehicle_model'],
+            'model_year' => $payload['model_year'],
+            'insured' => $payload['insured'],
+            'date_of_last_service' => $payload['date_of_last_service'],
+            'passenger_capacity' => $payload['passenger_capacity'],
+            'driver_id' => $payload['driver_id'],
+        ]);
+
+        $response->assertJsonStructure([
+            [
+                'status',
+                'success',
+                'message',
             ]
         ]);
     }

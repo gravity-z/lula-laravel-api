@@ -18,18 +18,21 @@ class VehicleController extends Controller
      *
      * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $vehicles = Vehicle::all();
+            $page = $request->input('page', 1);
+            $perPage = $request->input('per_page', 10);
+
+            $vehicles = Vehicle::paginate($perPage, ['*'], 'page', $page);
 
             if ($vehicles->isNotEmpty()) {
-                return response()->update('OK', true, 'Vehicles found!', VehicleResource::collection($vehicles));
+                return response()->update('OK', true, 'Vehicles found!', VehicleResource::collection($vehicles), 200);
             }
-            return response()->update('ERROR', false, 'Vehicles not found!', VehicleResource::collection($vehicles));
+            return response()->update('ERROR', false, 'Vehicles not found!', VehicleResource::collection($vehicles), 404);
 
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Vehicles not found!');
+            return response()->update('ERROR', false, 'Vehicles not found!', 404);
         }
     }
 
@@ -49,12 +52,12 @@ class VehicleController extends Controller
 
             // check if the driver has any vehicles
             if ($vehicles->isNotEmpty()) {
-                return response()->update('OK', true, 'Driver vehicle(s) found!', VehicleResource::collection($vehicles));
+                return response()->update('OK', true, 'Driver vehicle(s) found!', VehicleResource::collection($vehicles), 200);
             }
-            return response()->update('ERROR', false, 'Driver vehicle(s) not found!', VehicleResource::collection($vehicles));
+            return response()->update('ERROR', false, 'Driver vehicle(s) not found!', VehicleResource::collection($vehicles), 404);
 
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Driver vehicle(s) not found!');
+            return response()->update('ERROR', false, 'Driver vehicle(s) not found!', 404);
         }
     }
 
@@ -100,7 +103,7 @@ class VehicleController extends Controller
 
             // check the validation
             if ($validator->fails()) {
-                return response()->update('ERROR', false, 'Vehicle could not be created!');
+                return response()->update('ERROR', false, 'Vehicle could not be created!', 400);
             }
 
             $validatedData = $validator->validated();
@@ -111,16 +114,16 @@ class VehicleController extends Controller
                 // check if the driver has a vehicle with the same license plate number
                 $vehicles = $driver->vehicles()->where('license_plate_number', $validatedData['license_plate_number'])->get();
                 if ($vehicles->isNotEmpty()) {
-                    return response()->update('ERROR', false, 'Vehicle could not be created!', new VehicleResource($vehicles->first()));
+                    return response()->update('ERROR', false, 'Vehicle could not be created!', new VehicleResource($vehicles->first()), 400);
                 }
             }
 
             // Create the vehicle record
             $vehicle = Vehicle::create($validatedData);
-            return response()->update('OK', true, 'Vehicle created!', new VehicleResource($vehicle));
+            return response()->update('OK', true, 'Vehicle created!', new VehicleResource($vehicle), 201);
 
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Vehicle could not be created!');
+            return response()->update('ERROR', false, 'Vehicle could not be created!', 400);
         }
     }
 
@@ -180,16 +183,16 @@ class VehicleController extends Controller
             $vehicle = Vehicle::findOrFail($id);
 
             if ($validator->fails()) {
-                return response()->update('ERROR', false, 'Vehicle details could not be updated.', new VehicleResource($vehicle));
+                return response()->update('ERROR', false, 'Vehicle details could not be updated.', new VehicleResource($vehicle), 400);
             }
             $validatedData = $validator->validated();
 
             // Update the vehicle record
             $vehicle->update($validatedData);
-            return response()->update('OK', true, 'Vehicle details updated.', new VehicleResource($vehicle));
+            return response()->update('OK', true, 'Vehicle details updated.', new VehicleResource($vehicle), 200);
 
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Vehicle details could not be updated.');
+            return response()->update('ERROR', false, 'Vehicle details could not be updated.', 400);
         }
     }
 
@@ -206,12 +209,12 @@ class VehicleController extends Controller
             $vehicle = Vehicle::findOrFail($id);
 
             if ($vehicle->delete()) {
-                return response()->update('OK', true, 'Vehicle deleted!');
+                return response()->update('OK', true, 'Vehicle deleted!', 200);
             } else {
-                return response()->update('ERROR', false, 'Vehicle could not be deleted.');
+                return response()->update('ERROR', false, 'Vehicle could not be deleted.', 400);
             }
         } catch (\Exception $e) {
-            return response()->update('ERROR', false, 'Vehicle could not be deleted.');
+            return response()->update('ERROR', false, 'Vehicle could not be deleted.', 400);
         }
     }
 }

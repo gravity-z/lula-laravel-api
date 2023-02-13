@@ -22,8 +22,18 @@ class GetVehiclesTest extends TestCase
      */
     public function test_get_vehicles_status_code_success(): void
     {
+        // Arrange
+        User::factory(5)->create();
+        License::factory(5)->create();
+        $drivers = Driver::factory(5)->create();
+        foreach ($drivers as $driver) {
+            Vehicle::factory()->create(['driver_id' => $driver->id]);
+        }
+
+        // Act
         $response = $this->get('api/vehicles');
 
+        // Assert
         $response->assertStatus(200);
     }
 
@@ -34,8 +44,15 @@ class GetVehiclesTest extends TestCase
      */
     public function test_get_vehicles_status_code_failure(): void
     {
-        $response = $this->get('api/vehicle');
+        // Arrange
+        User::factory(5)->create();
+        License::factory(5)->create();
+        Driver::factory(5)->create();
 
+        // Act
+        $response = $this->get('api/vehicles');
+
+        // Assert
         $response->assertStatus(404);
     }
 
@@ -130,7 +147,7 @@ class GetVehiclesTest extends TestCase
         $data = $response->json();
 
         // Assert
-        $response->assertStatus(200);
+        $response->assertStatus(404);
         $this->assertCount(0, $data[0]['data']);
 
         $response->assertJson([

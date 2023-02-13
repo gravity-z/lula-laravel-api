@@ -45,11 +45,11 @@ class DeleteDriverIdDetailsTest extends TestCase
         // Arrange
         User::factory()->create();
         License::factory()->create();
-        $driver = Driver::factory()->create();
+        Driver::factory()->create();
         Vehicle::factory()->create();
 
         // Act
-        $response = $this->delete('api/drivers/1/detail');
+        $response = $this->delete('api/driver/0/details');
 
         // Assert
         $response->assertStatus(404);
@@ -82,7 +82,7 @@ class DeleteDriverIdDetailsTest extends TestCase
 
         $response->assertJson([
             [
-               'status' => 'OK',
+                'status' => 'OK',
                 'success' => true,
                 'message' => 'Driver information deleted!',
             ]

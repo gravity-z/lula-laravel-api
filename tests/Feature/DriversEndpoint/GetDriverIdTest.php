@@ -21,8 +21,16 @@ class GetDriverIdTest extends TestCase
      */
     public function test_get_driver_status_code_success(): void
     {
-        $response = $this->get('api/drivers/1');
+        // Arrange
+        User::factory()->create();
+        License::factory()->create();
+        $driver = Driver::factory()->create();
 
+
+        // Act
+        $response = $this->get("api/drivers/{$driver->id}");
+
+        // Assert
         $response->assertStatus(200);
     }
 
