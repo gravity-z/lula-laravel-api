@@ -26,8 +26,33 @@ class DriverController extends Controller
         try {
             $page = $request->input('page', 1);
             $perPage = $request->input('per_page', 10);
+            $drivers = Driver::with('user', 'vehicles', 'license');
 
-            $drivers = Driver::with('user', 'vehicles', 'license')->paginate($perPage, ['*'], 'page', $page);
+            $validator = Validator::make($request->only(['name', 'address', 'vehicle_capacity']), [
+                'name' => 'string|max:50',
+                'address' => 'string|max:255',
+                'vehicle_capacity' => 'integer|min:1',
+            ]);
+
+            if ($validator->stopOnFirstFailure()->fails()) {
+                return response()->update('ERROR', false, $validator->errors()->first(), 422);
+            }
+
+            $validatedData = $validator->validated();
+
+            if ($request->has('name')) {
+                $drivers = $drivers->subString($validatedData['name']);
+            }
+
+            if ($request->has('address')) {
+                $drivers = $drivers->address($validatedData['address']);
+            }
+
+            if ($request->has('vehicle_capacity')) {
+                $drivers = $drivers->vehicleCapacity($validatedData['vehicle_capacity']);
+            }
+
+            $drivers = $drivers->paginate($perPage, ['*'], 'page', $page);
 
             if ($drivers->isNotEmpty()) {
                 return response()->update('OK', true, 'Drivers found!', DriverResource::collection($drivers), 200);
