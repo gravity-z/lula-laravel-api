@@ -31,7 +31,7 @@ class DriverController extends Controller
             $validator = Validator::make($request->only(['name', 'address', 'vehicle_capacity']), [
                 'name' => 'string|max:50',
                 'address' => 'string|max:255',
-                'vehicle_capacity' => 'integer|min:1',
+                'vehicle_capacity' => 'integer|min:2|max:10'
             ]);
 
             if ($validator->stopOnFirstFailure()->fails()) {
