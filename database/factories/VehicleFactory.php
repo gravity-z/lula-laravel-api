@@ -21,7 +21,7 @@ class VehicleFactory extends Factory
             'model_year' => $this->faker->year($max = 'now'),
             'insured' => $this->faker->boolean,
             'date_of_last_service' => $this->faker->dateTimeThisYear,
-            'passenger_capacity' => $this->faker->numberBetween($min = 1, $max = 10),
+            'passenger_capacity' => $this->faker->numberBetween($min = 2, $max = 10),
             'driver_id' => function () {
                 return \App\Models\Driver::inRandomOrder()->first()->id;
             },
