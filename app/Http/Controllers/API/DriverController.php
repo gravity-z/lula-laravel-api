@@ -28,7 +28,7 @@ class DriverController extends Controller
             $perPage = $request->input('per_page', 10);
 
             $validator = Validator::make($request->only(['name', 'address', 'vehicle_capacity', 'sort_by', 'order']), [
-                'name' => 'string|max:10',
+                'name' => 'string|min:1|max:10',
                 'address' => 'string|max:255',
                 'vehicle_capacity' => 'integer|min:2|max:10',
                 'sort_by' => 'string|in:name',
@@ -36,7 +36,7 @@ class DriverController extends Controller
             ]);
 
             if ($validator->stopOnFirstFailure()->fails()) {
-                return response()->update('ERROR', false, $validator->errors()->first(), 422);
+                return response()->update('ERROR', false, $validator->errors()->first(), [], 422);
             }
 
             $validatedData = $validator->validated();
