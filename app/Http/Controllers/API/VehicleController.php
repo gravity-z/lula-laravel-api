@@ -24,7 +24,33 @@ class VehicleController extends Controller
             $page = $request->input('page', 1);
             $perPage = $request->input('per_page', 10);
 
-            $vehicles = Vehicle::paginate($perPage, ['*'], 'page', $page);
+            $validator = Validator::make($request->only(['make', 'service_date', 'age']), [
+                'make' => 'string|max:30',
+                'service_date' => 'date',
+                'age' => 'integer|max:10'
+            ]);
+
+            if ($validator->stopOnFirstFailure()->fails()) {
+                return response()->update('ERROR', false, $validator->errors()->first(), 400);
+            }
+
+            $validatedData = $validator->validated();
+
+            $vehicles = Vehicle::query();
+
+            if ($request->has('make')) {
+                $vehicles = $vehicles->vehicleMake($validatedData['make']);
+            }
+
+            if ($request->has('service_date')) {
+                $vehicles = $vehicles->serviceDate($validatedData['service_date']);
+            }
+
+            if ($request->has('age')) {
+                $vehicles = $vehicles->modelAge($validatedData['age']);
+            }
+
+            $vehicles = $vehicles->paginate($perPage, ['*'], 'page', $page);
 
             if ($vehicles->isNotEmpty()) {
                 return response()->update('OK', true, 'Vehicles found!', VehicleResource::collection($vehicles), 200);
