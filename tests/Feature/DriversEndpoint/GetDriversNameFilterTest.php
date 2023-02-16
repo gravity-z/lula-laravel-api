@@ -19,7 +19,7 @@ class GetDriversNameFilterTest extends TestCase
      *
      * @return void
      */
-    public function test_get_drivers_filter_status_code_success(): void
+    public function test_get_drivers_filter_name_status_code_success(): void
     {
         // Arrange
         $users = User::factory()->createMany([
@@ -29,7 +29,7 @@ class GetDriversNameFilterTest extends TestCase
             ['first_name' => 'George'],
             ['first_name' => 'Paul'],
         ]);
-        License::factory()->create();
+        License::factory(5)->create();
         $users->each(function ($user) {
             Driver::factory()->create(['user_id' => $user->id]);
         });
@@ -46,7 +46,7 @@ class GetDriversNameFilterTest extends TestCase
      *
      * @return void
      */
-    public function test_get_drivers_filter_status_code_failure(): void
+    public function test_get_drivers_filter_name_status_code_failure(): void
     {
         // Arrange
         $users = User::factory()->createMany([
@@ -56,7 +56,7 @@ class GetDriversNameFilterTest extends TestCase
             ['first_name' => 'George'],
             ['first_name' => 'Paul'],
         ]);
-        License::factory()->create();
+        License::factory(5)->create();
         $users->each(function ($user) {
             Driver::factory()->create(['user_id' => $user->id]);
         });
@@ -84,7 +84,7 @@ class GetDriversNameFilterTest extends TestCase
             ['first_name' => 'George'],
             ['first_name' => 'Paul'],
         ]);
-        License::factory()->create();
+        License::factory(5)->create();
         $users->each(function ($user) {
             Driver::factory()->create(['user_id' => $user->id]);
         });
@@ -162,7 +162,7 @@ class GetDriversNameFilterTest extends TestCase
             ['first_name' => 'George'],
             ['first_name' => 'Paul'],
         ]);
-        License::factory()->create();
+        License::factory(5)->create();
         $users->each(function ($user) {
             Driver::factory()->create(['user_id' => $user->id]);
         });
@@ -210,7 +210,7 @@ class GetDriversNameFilterTest extends TestCase
             ['first_name' => 'George'],
             ['first_name' => 'Paul'],
         ]);
-        License::factory()->create();
+        License::factory(5)->create();
         $users->each(function ($user) {
             Driver::factory()->create(['user_id' => $user->id]);
         });
@@ -258,7 +258,7 @@ class GetDriversNameFilterTest extends TestCase
             ['first_name' => 'George'],
             ['first_name' => 'Paul'],
         ]);
-        License::factory()->create();
+        License::factory(5)->create();
         $users->each(function ($user) {
             Driver::factory()->create(['user_id' => $user->id]);
         });
