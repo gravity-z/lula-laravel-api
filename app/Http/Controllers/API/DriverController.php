@@ -26,12 +26,13 @@ class DriverController extends Controller
         try {
             $page = $request->input('page', 1);
             $perPage = $request->input('per_page', 10);
-            $drivers = Driver::with('user', 'vehicles', 'license');
 
-            $validator = Validator::make($request->only(['name', 'address', 'vehicle_capacity']), [
+            $validator = Validator::make($request->only(['name', 'address', 'vehicle_capacity', 'sort_by', 'order']), [
                 'name' => 'string|max:50',
                 'address' => 'string|max:255',
-                'vehicle_capacity' => 'integer|min:2|max:10'
+                'vehicle_capacity' => 'integer|min:2|max:10',
+                'sort_by' => 'string|in:name',
+                'order' => 'string|in:asc,desc',
             ]);
 
             if ($validator->stopOnFirstFailure()->fails()) {
@@ -39,6 +40,8 @@ class DriverController extends Controller
             }
 
             $validatedData = $validator->validated();
+
+            $drivers = Driver::with('user', 'vehicles', 'license');
 
             if ($request->has('name')) {
                 $drivers = $drivers->subString($validatedData['name']);
@@ -50,6 +53,10 @@ class DriverController extends Controller
 
             if ($request->has('vehicle_capacity')) {
                 $drivers = $drivers->vehicleCapacity($validatedData['vehicle_capacity']);
+            }
+
+            if ($request->has('sort_by')) {
+                $drivers = $drivers->orderBy($validatedData['sort_by'], $validatedData['order'] ?? 'asc');
             }
 
             $drivers = $drivers->paginate($perPage, ['*'], 'page', $page);
