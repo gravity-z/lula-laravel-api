@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
 
 namespace App\Http\Controllers\API;
 
@@ -16,6 +16,7 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return AnonymousResourceCollection
      */
     public function index(Request $request)
