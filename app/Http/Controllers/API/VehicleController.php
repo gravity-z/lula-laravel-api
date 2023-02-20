@@ -28,7 +28,7 @@ class VehicleController extends Controller
             $validator = Validator::make($request->only(['make', 'service_date', 'age']), [
                 'make' => 'string|max:30',
                 'service_date' => 'date',
-                'age' => 'integer|max:10'
+                'age' => 'integer|max:100'
             ]);
 
             if ($validator->stopOnFirstFailure()->fails()) {
