@@ -110,4 +110,11 @@ class Driver extends Model
             $q->where('passenger_capacity', $capacity)
         );
     }
+
+    public function scopeOrderByUserName(Builder $query, $name, $order = 'asc'): Builder
+    {
+        return $query->join('users', 'users.id', '=', 'drivers.user_id')
+            ->orderBy("users.first_$name", $order)
+            ->select('drivers.*');
+    }
 }
