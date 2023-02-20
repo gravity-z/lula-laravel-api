@@ -56,7 +56,7 @@ class DriverController extends Controller
             }
 
             if ($request->has('sort_by')) {
-                $drivers = $drivers->orderBy($validatedData['sort_by'], $validatedData['order'] ?? 'asc');
+                $drivers = $drivers->orderByUserName($validatedData['sort_by'], $validatedData['order'] ?? 'asc');
             }
 
             $drivers = $drivers->paginate($perPage, ['*'], 'page', $page);
